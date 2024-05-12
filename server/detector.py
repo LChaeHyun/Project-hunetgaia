@@ -14,7 +14,8 @@ class Reader:
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.stop = False
-        self.frame_buffer = deque(maxlen=3)
+        self.max_buffer_size = 4
+        self.frame_buffer = deque(maxlen=self.max_buffer_size)
 
     def __call__(self):
         thread = threading.Thread(target=self.read)
@@ -25,13 +26,13 @@ class Reader:
             time.sleep(0.03)  # Adjust the sleep time to control the frame processing rate
             success, frame = self.cap.read()  # Read a frame from the camera
             if success:
-                if len(self.frame_buffer)<3:
-                    self.frame_buffer.append(frame)
+                self.frame_buffer.append(frame)
     
     def capture(self):
-        if len(self.frame_buffer)<2:
+        if len(self.frame_buffer)<self.max_buffer_size-1:
             return False, None
-        return True, self.frame_buffer.popleft()
+        else:
+            return True, self.frame_buffer[-2]
 
     def terminate(self):
         self.stop = True
@@ -53,8 +54,8 @@ class ObjectDetection:
 
         # device information
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-        self.frame_buffer = deque(maxlen=3)
+        self.max_buffer_size = 4
+        self.frame_buffer = deque(maxlen=self.max_buffer_size)
         self.stop = False
     
     def __call__(self):
@@ -106,10 +107,10 @@ class ObjectDetection:
     #         frame = self.frame_buffer.get()
     #         return True, frame
     def capture(self):
-        if len(self.frame_buffer) < 2:
+        if len(self.frame_buffer) < self.max_buffer_size-1:
             return False, None
         else:
-            return True, self.frame_buffer.popleft()
+            return True, self.frame_buffer[-2]
     
     def terminate(self):
         self.stop = True

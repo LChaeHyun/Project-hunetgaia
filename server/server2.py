@@ -4,14 +4,14 @@ from time import sleep
 import cv2
 
 app = Flask(__name__)
-# detector = ObjectDetection('rtsp://210.99.70.120:1935/live/cctv001.stream')
-# detector()
-# detector2 = ObjectDetection('rtsp://210.99.70.120:1935/live/cctv002.stream')
-# detector2()
-reader = Reader('rtsp://210.99.70.120:1935/live/cctv001.stream')
-reader()
-reader2 = Reader('rtsp://210.99.70.120:1935/live/cctv002.stream')
-reader2()
+detector = ObjectDetection('rtsp://210.99.70.120:1935/live/cctv001.stream')
+detector()
+detector2 = ObjectDetection('rtsp://210.99.70.120:1935/live/cctv002.stream')
+detector2()
+# reader = Reader('rtsp://210.99.70.120:1935/live/cctv001.stream')
+# reader()
+# reader2 = Reader('rtsp://210.99.70.120:1935/live/cctv002.stream')
+# reader2()
 @app.route('/')
 def index():
     return render_template('index2.html')  # Render the HTML template
@@ -28,7 +28,8 @@ def gen_frames():
     
     while True:
         sleep(0.03)
-        captured, img = reader.capture()
+        captured, img = detector.capture()
+        #captured, img = reader.capture()
         if captured:
             encoded, buffer = cv2.imencode('.jpg', img)
             if encoded:
@@ -40,7 +41,8 @@ def gen_frames2():
     
     while True:
         sleep(0.03)
-        captured, img = reader2.capture()
+        captured, img = detector2.capture()
+        #captured, img = reader2.capture()
         if captured:
             encoded, buffer = cv2.imencode('.jpg', img)
             if encoded:
