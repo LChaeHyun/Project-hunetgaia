@@ -100,12 +100,6 @@ class ObjectDetection:
         self.reader.terminate()
         cv2.destroyAllWindows()
     
-    # def capture(self):
-    #     if(self.frame_buffer.empty()):
-    #         return False, None
-    #     else:
-    #         frame = self.frame_buffer.get()
-    #         return True, frame
     def capture(self):
         if len(self.frame_buffer) < self.max_buffer_size-1:
             return False, None
