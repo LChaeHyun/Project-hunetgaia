@@ -1,9 +1,9 @@
-##Label
+Label
 라벨명 변경 시 FIRE.txt에 라벨 이름만 적어주세요
 라벨 파일 변경 시 10 line에 경로를 변경하시면 됩니다.
 
-##model
+model
 model 변경 시 15 line에 model 경로를 변경하시면 됩니다.
 
-##정확도
+정확도
 6 line에 CONFIDENCE_THRESHOLD 변수 값을 변경하면 CONFIDENCE_THRESHOLD 변수값 이상의 정확도인 detect만 표시됩니다.
