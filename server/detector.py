@@ -64,7 +64,7 @@ class ObjectDetection:
         thread.start()
 
     def predict(self, im0):
-        results = self.model.predict(im0, verbose=False, stream=True)
+        results = self.model.predict(im0, verbose=False, stream=True) #verbose: False하면 콘솔에 출력하는거 출력 안 함, stream: False하면 next(results) 대신에 results[0] 넣으면 됩니다. 똑같습니다.
         return next(results)
 
     def display_fps(self, im0):
