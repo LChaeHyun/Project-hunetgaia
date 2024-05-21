@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, request, redirect, url_for
 from detector import ObjectDetection, Reader
 from time import sleep
 import cv2
@@ -64,6 +64,45 @@ def all_video_feeds(username):
     user = User.findUser(username=username)
     return render_template('all_video_feeds.html', username=username, detector_count=len(user.detectors))
 
+# Profile route
+@app.route('/<username>/profile', methods=['GET', 'POST'])
+def profile(username):
+    user = User.findUser(username)
+    if not user:
+        return "User not found", 404
+    if request.method == 'POST':
+        address = request.form.get('address')
+        if address:
+            user.videos.append(address)
+            detect = ObjectDetection(address)
+            detect()
+            user.detectors.append(detect)
+            return redirect(url_for('profile', username=username))
+    return render_template('profile.html', username=username, addresses=user.videos)
+
+# Remove address route
+@app.route('/<username>/remove_address/<int:address_index>', methods=['POST'])
+def remove_address(username, address_index):
+    user = User.findUser(username)
+    if not user or address_index >= len(user.videos):
+        return "Address not found", 404
+    user.detectors[address_index].terminate()
+    user.videos.pop(address_index)
+    user.detectors.pop(address_index)
+    return redirect(url_for('profile', username=username))
+
+'''
+@app.route("/profile",methods=['GET', 'POST'])
+def profile():
+    if(request.method =='GET'):
+        
+    elif (request.method =='POST'):
+        address = request.form['address']
+        username = request.form['username']
+        user = User.findUser(username=username)
+        user.videos.append(address)
+    return render_template('profile.html')
+'''
 '''
 TODO List
 ?column=i 로 칼럼 개수 조절 가능

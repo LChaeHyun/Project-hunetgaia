@@ -10,8 +10,10 @@ pip install Flask
 
 1. File detector.py line 47: 모델 파일 경로('./v8sbest.pt')를 적어준다.
 2. monitor.py를 실행
-3. 127.0.0.1:5000/orange/all 에 접속
-나머지 페이지는 미구현
+3. 127.0.0.1:5000/orange/all 에 접속하여 모니터링
+4. 127.0.0.1:5000/orange/profile 에 접속하여 CCTV주소 추가 혹은 삭제
+
+- 나머지 페이지 미구현
 
 ***
 
@@ -49,3 +51,4 @@ Class ObjectDetection:
     - 어제는 Flask 돌리면 페이지 접속이 됐는데 오늘은 안 되고 있음
 2. server2.py 실행결과 두 번째 영상의 ObjectDetection.displayfps() 박스 크기가 더 작음
 3. fps조절용으로 중간중간 time.sleep(0.03) 넣어 놨는데 없어도 잘 돌아갑니다. 원래는 디버깅할 때 넣은 건데 디버깅 끝나고 지우다가 굳이 싶어서 남겨둔 건 데 FPS 성능 측정을 위해서는 제거해야 합니다.
+4. 모니터링 화면 <-> 프로필 화면 간 링크 혹은 네비게이션 바 추가하기ㄴ
