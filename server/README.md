@@ -1,10 +1,12 @@
-##Dependency
+## Dependency
 Flask 설치가 필요합니다.
 ```
 pip install Flask
 ```
-----------
-##Usage
+
+***
+
+## Usage
 
 1. File detector.py line 47: 모델 파일 경로('./v8sbest.pt')를 적어준다.
 2. server1.py 또는 server2.py를 실행
@@ -28,17 +30,17 @@ detector = ObjectDetection('rtsp://210.99.70.120:1935/live/cctv001.stream')
 detector()
 ```
 
----
+***
 
-##해결안 된 문제
+## 해결안 된 문제
 
 1. GPU서버에서 돌렸을 때 이제는 영상이 뒤죽박죽 안 섞이는지 테스트
     - 어제는 Flask 돌리면 페이지 접속이 됐는데 오늘은 안 되고 있음
 2. server2.py 실행결과 두 번째 영상의 ObjectDetection.displayfps() 박스 크기가 더 작음
 
----
+***
 
-##detector.py 코드 설명
+## detector.py 코드 설명
 
 Class 두 개: Reader, ObjectDetection
 
@@ -62,7 +64,7 @@ Class Reader :
 
 
 
---------------------
+***
 
 
 
@@ -75,4 +77,4 @@ Class ObjectDetection:
 
 
 
-fps조절용으로 중간중간 time.sleep(0.03) 넣어 놨는데 없어도 잘 돌아갑니다. 원래는 디버깅할 때 넣은 건데 디버깅 끝나고 지우다가 굳이 싶어서 남겨둔 거라서 삭제해도 무방합니다.
+fps조절용으로 중간중간 time.sleep(0.03) 넣어 놨는데 없어도 잘 돌아갑니다. 원래는 디버깅할 때 넣은 건데 디버깅 끝나고 지우다가 굳이 싶어서 남겨둔 건 데 FPS 성능 측정을 위해서는 제거해야 합니다.
