@@ -9,7 +9,6 @@ class User:
         self.username = ''
         self.password = ''
         self.email = ''
-        self.preferredNumberOfColumns = 0
 
         self.videos = []
 
@@ -17,11 +16,11 @@ class User:
 
         User.user_list.append(self)
     
-    def findUser(username):
-        for v in User.user_list:
-            if v.username==username:
-                return v
-
+    @classmethod
+    def findUser(cls, username):
+        for user in User.user_list:
+            if user.username==username:
+                return user
 
 app = Flask(__name__)
 
@@ -41,7 +40,7 @@ for v in user.videos:
 
 @app.route('/')
 def index():
-    return render_template('monitor.html')  # Render the HTML template
+    return render_template('index.html')  # Render the HTML template
 
 @app.route('/<username>/video_feed/<int:index>')
 def video_feed(username, index):
@@ -62,7 +61,8 @@ def gen_frames(user, index):
 @app.route('/<username>/all')
 def all_video_feeds(username):
     user = User.findUser(username=username)
-    return render_template('all_video_feeds.html', username=username, detector_count=len(user.detectors))
+    #return render_template('all_video_feeds.html', username=username, detector_count=len(user.detectors))
+    return render_template('monitor.html', username=username, detector_count=len(user.detectors))
 
 # Profile route
 @app.route('/<username>/profile', methods=['GET', 'POST'])
@@ -92,23 +92,12 @@ def remove_address(username, address_index):
     return redirect(url_for('profile', username=username))
 
 '''
-@app.route("/profile",methods=['GET', 'POST'])
-def profile():
-    if(request.method =='GET'):
-        
-    elif (request.method =='POST'):
-        address = request.form['address']
-        username = request.form['username']
-        user = User.findUser(username=username)
-        user.videos.append(address)
-    return render_template('profile.html')
-'''
-'''
 TODO List
-?column=i 로 칼럼 개수 조절 가능
-회원가입, 로그인, 설정 페이지(e-mail등록, CCTV 주소 추가/삭제, 회원 탈퇴 기능), DB
+css
+네비게이션바, 홈, 회원가입?, 로그인?, 설정 페이지(e-mail등록, ?회원 탈퇴? 기능), DB
+파일 이름 수정, 경로명 수정 app.py, monitor.py등
+requirements.txt 작성
 '''
-
 
 if __name__ == '__main__':
     app.run()

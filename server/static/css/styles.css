@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+/* _navbar.html */
+.navbar {
+    background-color: #343a40;
+    overflow: hidden;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    background-color: #ddd;
+    color: black;
+}
+/* profile.html */
+.profile-page-container {
+    padding: 20px;
+}
+
+.address-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.address-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* monitor.html */
+.monitor-page-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+    gap: 20px;
+    padding: 20px;
+}/*그리드 적용 안 되는 중, 이유 모름*/
+
+.cctv-feed {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cctv-feed img {
+    width: 100%;
+    max-width: 100%; /* Ensures the video scales to fit within the container */
+    height: auto;
+    display: block;
+}
+
+.cctv-feed h2 {
+    margin: 0;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+}

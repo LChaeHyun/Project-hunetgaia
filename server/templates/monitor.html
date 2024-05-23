@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Video Feeds</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    {% include '_navbar.html' %}
+    <div class="monitor-page-conatiner">
+        {% if detector_count > 0 %}
+            {% for index in range(detector_count) %}
+                <div class="cctv-feed">
+                    <h2>Feed {{ index + 1 }}</h2>
+                    <img src="{{ url_for('video_feed', username=username, index=index) }}" alt="Video feed {{ index + 1 }}">
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No registered CCTV feeds. Please add one in your <a href="{{ url_for('profile', username=username) }}">profile</a>.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
