@@ -1,3 +1,6 @@
+### yolov8_detect.py - Deepsort를 이용한 tracking 기능 구현
+### detectonly.py - detect만 가능
+
 ## Label<br/>
 라벨명 변경 시 Fire.txt에 라벨 이름만 적어주세요<br/>
 라벨 파일 변경 시 10 line에 경로를 변경하시면 됩니다.<br/>
