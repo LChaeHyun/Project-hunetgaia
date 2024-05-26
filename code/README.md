@@ -1,5 +1,5 @@
-### yolov8_detect.py - Deepsort를 이용한 tracking 기능 구현
-### detectonly.py - detect만 가능
+#### yolov8_detect.py - Deepsort를 이용한 tracking 기능 구현
+#### detectonly.py - detect만 가능
 
 ## Label<br/>
 라벨명 변경 시 Fire.txt에 라벨 이름만 적어주세요<br/>
