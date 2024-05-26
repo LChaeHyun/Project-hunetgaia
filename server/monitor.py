@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, request, redirect, url_for
+from flask import Flask, Response, render_template, request, redirect, url_for, flash
 from detector import ObjectDetection, Reader
 from time import sleep
 import cv2
@@ -40,7 +40,8 @@ for v in user.videos:
 
 @app.route('/')
 def index():
-    return render_template('index.html')  # Render the HTML template
+    username = "orange"
+    return render_template("index.html", username=username)  # Render the HTML template
 
 @app.route('/<username>/video_feed/<int:index>')
 def video_feed(username, index):
@@ -68,6 +69,7 @@ def all_video_feeds(username):
 @app.route('/<username>/profile', methods=['GET', 'POST'])
 def profile(username):
     user = User.findUser(username)
+    print(user)
     if not user:
         return "User not found", 404
     if request.method == 'POST':
@@ -99,5 +101,40 @@ css
 requirements.txt 작성
 '''
 
+
+@app.route("/login")
+def signin():
+    username = "orange"
+    return render_template("loginForm.html", username=username)
+
+
+@app.route("/signup")
+def signup():
+    return render_template("signupForm.html")
+    # username = request.form["username"]
+    # password = request.form["password"]
+    # confirm_password = request.form["confirm_password"]
+    # email = request.form["email"]
+
+    # if password != confirm_password:
+    #     flash("Passwords do not match!", "danger")
+    #     return redirect(url_for("signup"))
+
+    # # DB에 저장
+    # user = User()
+    # user.username = username
+    # user.password = password
+    # user.email = email
+    # user.videos = [
+    #     "rtsp://210.99.70.120:1935/live/cctv001.stream",
+    #     "rtsp://210.99.70.120:1935/live/cctv004.stream",
+    # ]
+
+    # flash("Account created successfully!", "success")
+    # return redirect(
+    #     url_for("login")
+    # )
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
