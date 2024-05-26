@@ -3,9 +3,9 @@ import cv2
 from ultralytics import YOLO
 from deep_sort_realtime.deepsort_tracker import DeepSort
 
-CONFIDENCE_THRESHOLD = 0.2
+CONFIDENCE_THRESHOLD = 0.4
 GREEN = (0, 255, 0)
-WHITE = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 fire_label = open('./Fire.txt', 'r')
 data = fire_label.read()
@@ -29,8 +29,6 @@ while True:
 
     detection = model.predict(source=[frame], save=False)[0]
     results = []
-    
-    detect_object_xmin = -1000
 
     for data in detection.boxes.data.tolist(): # data : [xmin, ymin, xmax, ymax, confidence_score, class_id]
         confidence = float(data[4])
@@ -39,14 +37,9 @@ while True:
 
         xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
         label = int(data[5])
-        # cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-        # cv2.putText(frame, class_list[label]+' '+str(round(confidence, 3)) + '%', (xmin, ymin), cv2.FONT_ITALIC, 1, (255, 255, 255), 2)
         results.append([[xmin, ymin, xmax-xmin, ymax-ymin], confidence, label])
 
     tracks = tracker.update_tracks(results, frame=frame)
-    for i in results:
-        print(i)
-        print(i[0][0])
 
     for track in tracks:
         if not track.is_confirmed():
@@ -64,12 +57,7 @@ while True:
                 cv2.putText(frame, str(track_id) + ' ' + class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
                 print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,class_list[label],xmin,ymin,xmax,ymax))
                 break
-        # if (gap_xmin > -error_range and gap_xmin < error_range and gap_xmax > -error_range and gap_xmax < error_range):
-        #     cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
-        #     cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
-        #     cv2.putText(frame, str(track_id) + ' ' + class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
-        #     print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,class_list[label],xmin,ymin,xmax,ymax))
-        
+                
     end = datetime.datetime.now()
     total = (end - start).total_seconds()
     # print(f'Time to process 1 frame: {total * 1000:.0f} milliseconds')
