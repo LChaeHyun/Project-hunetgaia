@@ -49,7 +49,7 @@ class Reader:
 
 
 class Detector:
-    def __init__(self, source, email_receiver):
+    def __init__(self, source, email_receivers):
         self.reader = Reader(source)
         self.model = YOLO("./v8sbest.pt")
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -57,7 +57,7 @@ class Detector:
         self.frame_buffer = deque(maxlen=self.max_buffer_size)
         self.stop = False
         self.tracker = DeepSort(max_age=60)
-        self.email_receiver = email_receiver
+        self.email_receiver = email_receivers
         self.notification_time_limit = datetime.datetime.now()
 
         fire_label = open('./Fire.txt', 'r')
@@ -114,7 +114,7 @@ class Detector:
                                 cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
                                 cv2.putText(frame, str(track_id) + ' ' + self.class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
                                 #print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,self.class_list[label],xmin,ymin,xmax,ymax))
-                                self.send_email(self.email_receiver, self.class_list[label])
+                                self.send_email(self.email_receivers, self.class_list[label])
                                 break
                         # if (gap_xmin > -error_range and gap_xmin < error_range and gap_xmax > -error_range and gap_xmax < error_range):
                         #     cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
@@ -143,27 +143,28 @@ class Detector:
     def terminate(self):
         self.stop = True
     
-    def send_email(self, reciver,cctv):
+    def send_email(self, recivers,cctv):
         now = datetime.datetime.now()
-        if now > self.notification_time_limit:
-            smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-            EMAIL_ADDR = 'testhunetgaia@gmail.com'
-            smtp.login(EMAIL_ADDR, 'kfzxrsvnqitwnrab')
-            message = EmailMessage()
-            message.set_content(f'{cctv} has been detected at {now}')
-            subject = f'{cctv} has been detected'
-            message["Subject"] = subject
-            message["From"] = EMAIL_ADDR  
-            message["To"] = reciver
-            smtp.send_message(message)
-            smtp.quit()
+        for r in recivers:
+            if now > self.notification_time_limit:
+                smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+                EMAIL_ADDR = 'testhunetgaia@gmail.com'
+                smtp.login(EMAIL_ADDR, 'kfzxrsvnqitwnrab')
+                message = EmailMessage()
+                message.set_content(f'{cctv} has been detected at {now}')
+                subject = f'{cctv} has been detected'
+                message["Subject"] = subject
+                message["From"] = EMAIL_ADDR  
+                message["To"] = r[1]
+                smtp.send_message(message)
+                smtp.quit()
 
-            # Don't send email before notification_time_limit
-            self.notification_time_limit = now + datetime.timedelta(hours=24) # For Distribution
-            #self.notification_time_limit = now + datetime.timedelta(seconds=10) #Debug Feature
-            print(f'sent e-mail at {now}, set notification time limit at {self.notification_time_limit}')
-        else:
-            print(f"didn't sent e-mail at {now}, notification time limit till {self.notification_time_limit}")
+                # Don't send email before notification_time_limit
+                self.notification_time_limit = now + datetime.timedelta(hours=24) # For Distribution
+                #self.notification_time_limit = now + datetime.timedelta(seconds=10) #Debug Feature
+                print(f'sent e-mail at {now}, set notification time limit at {self.notification_time_limit}')
+            else:
+                print(f"didn't sent e-mail at {now}, notification time limit till {self.notification_time_limit}")
 
 
 if __name__ == "__main__":

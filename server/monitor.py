@@ -2,14 +2,14 @@ from flask import Flask, Response, render_template, request, redirect, url_for, 
 from detector import Detector, Reader
 from time import sleep
 import cv2
+from DBmanagement import Management
 
 class User:
     user_list = []
     def __init__(self):
         self.username = ''
         self.password = ''
-        self.email = ''
-
+        self.email = []
         self.videos = []
 
         self.detectors = []
@@ -25,16 +25,14 @@ class User:
 app = Flask(__name__)
 
 user = User()
+db = Management()
 user.username = 'orange'
 user.password = 'juice'
-user.email = 'limetree81@gmail.com'
-user.videos = ['rtsp://210.99.70.120:1935/live/cctv001.stream',
-               'rtsp://210.99.70.120:1935/live/cctv002.stream',
-               'rtsp://210.99.70.120:1935/live/cctv003.stream',
-               'rtsp://210.99.70.120:1935/live/cctv004.stream']
+user.email = db.email_get()
+user.videos = db.rtsp_get()
 
 for v in user.videos:
-    d = Detector(v, user.email)
+    d = Detector(v[2], user.email)
     d()
     user.detectors.append(d)
 
