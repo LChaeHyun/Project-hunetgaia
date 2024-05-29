@@ -167,8 +167,8 @@ class Detector:
 
 
 if __name__ == "__main__":
-    #detector = Detector(source="rtsp://210.99.70.120:1935/live/cctv001.stream")
-    detector = Detector(source=0, email_receiver='kghun81@gmail.com')
+    detector = Detector(source="rtsp://210.99.70.120:1935/live/cctv001.stream", email_receiver='kghun81@gmail.com')
+    #detector = Detector(source=0, email_receiver='kghun81@gmail.com')
     detector()
     while True:
         captured, frame = detector.capture()

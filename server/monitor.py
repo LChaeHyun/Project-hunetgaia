@@ -1,5 +1,5 @@
 from flask import Flask, Response, render_template, request, redirect, url_for, flash
-from detector import ObjectDetection, Reader
+from detector import Detector, Reader
 from time import sleep
 import cv2
 
@@ -34,7 +34,7 @@ user.videos = ['rtsp://210.99.70.120:1935/live/cctv001.stream',
                'rtsp://210.99.70.120:1935/live/cctv004.stream']
 
 for v in user.videos:
-    d = ObjectDetection(v)
+    d = Detector(v, user.email)
     d()
     user.detectors.append(d)
 
@@ -76,7 +76,7 @@ def profile(username):
         address = request.form.get('address')
         if address:
             user.videos.append(address)
-            detect = ObjectDetection(address)
+            detect = Detector(address)
             detect()
             user.detectors.append(detect)
             return redirect(url_for('profile', username=username))
