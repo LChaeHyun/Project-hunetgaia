@@ -48,6 +48,7 @@ Class ObjectDetection:
 ##DBmanagement.py 설명
 
 로컬에 hunet이라는 mysql db 추가 필요
+
 -db 구조
 ```
 create database hunet;
