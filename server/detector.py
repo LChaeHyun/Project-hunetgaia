@@ -11,7 +11,7 @@ from email.message import EmailMessage
 
 CONFIDENCE_THRESHOLD = 0.2
 GREEN = (0, 255, 0)
-WHITE = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 class Reader:
     def __init__(self, source):
@@ -167,8 +167,8 @@ class Detector:
 
 
 if __name__ == "__main__":
-    detector = Detector(source="rtsp://210.99.70.120:1935/live/cctv001.stream", email_receiver='kghun81@gmail.com')
-    #detector = Detector(source=0, email_receiver='kghun81@gmail.com')
+    #detector = Detector(source="rtsp://210.99.70.120:1935/live/cctv001.stream", email_receiver='kghun81@gmail.com')
+    detector = Detector(source=0, email_receiver='kghun81@gmail.com')
     detector()
     while True:
         captured, frame = detector.capture()
