@@ -45,6 +45,35 @@ Class ObjectDetection:
 
 ***
 
+##DBmanagement.py 설명
+
+로컬에 hunet이라는 mysql db 추가 필요
+-db 구조
+```
+create database hunet;
+use hunet;
+create table manager(
+	id varchar(50) NOT NULL primary key,
+	pwd varchar(50) not null
+);
+
+create table rtsp(
+	id int primary key auto_increment,
+	name varchar(50),
+	ip_address varchar(200)
+);
+
+
+create table email(
+	id int primary key auto_increment,
+	addrees varchar(50) not null
+);
+
+```
+ 
+
+***
+
 ## 해결안 된 문제
 
 1. GPU서버에서 돌렸을 때 이제는 영상이 뒤죽박죽 안 섞이는지 테스트
