@@ -7,10 +7,10 @@
 </head>
 <body>
     {% include '_navbar.html' %}
-    <div class="monitor-page-conatiner">
+    <div class="monitor_page_container">
         {% if detector_count > 0 %}
             {% for index in range(detector_count) %}
-                <div class="cctv-feed">
+                <div class="cctv_feed">
                     <h2>Feed {{ index + 1 }}</h2>
                     <img src="{{ url_for('video_feed', username=username, index=index) }}" alt="Video feed {{ index + 1 }}">
                 </div>

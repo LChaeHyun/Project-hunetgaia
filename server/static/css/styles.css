@@ -1,71 +1,259 @@
+* {
+  box-sizing: border-box;
+}
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
-    margin: 0;
-    padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
 }
 /* _navbar.html */
 .navbar {
-    background-color: #343a40;
-    overflow: hidden;
+  background-color: #343a40;
+  overflow: hidden;
+  display: flex;
+  padding: 0 50px;
+  justify-content: flex-start;
+  justify-content: center;
 }
 
 .navbar a {
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 20px;
-    text-decoration: none;
+  /* float: left; */
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
 }
 
 .navbar a:hover {
-    background-color: #ddd;
-    color: black;
+  background-color: #ddd;
+  color: black;
 }
 /* profile.html */
-.profile-page-container {
-    padding: 20px;
+.profile_page_container {
+  padding: 20px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
 }
 
-.address-list {
-    list-style-type: none;
-    padding: 0;
+.address_list {
+  list-style-type: none;
+  padding: 0;
 }
 
-.address-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+.address_item {
+  display: flex;
+  align-items: center;
+  width: 500px;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.address_item button {
+  padding: 5px 20px;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+}
+
+.address_item button:hover {
+  background-color: rgb(240, 62, 62);
 }
 
 /* monitor.html */
-.monitor-page-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
-    gap: 20px;
-    padding: 20px;
-}/*그리드 적용 안 되는 중, 이유 모름*/
-
-.cctv-feed {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.monitor_page_container {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+  background-color: black;
+  display: grid;
+  /* grid-template-columns: repeat(auto-fill, minmax(25%, 1fr)); */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
-.cctv-feed img {
-    width: 100%;
-    max-width: 100%; /* Ensures the video scales to fit within the container */
-    height: auto;
-    display: block;
+.cctv_feed {
+  display: inline-block;
+  width: 100%;
+  border-radius: 10px;
+  padding: 0 10px 50px 10px;
+  background-color: rgb(255, 255, 255);
 }
 
-.cctv-feed h2 {
-    margin: 0;
-    padding: 10px;
-    background-color: #343a40;
-    color: white;
-    text-align: center;
+.cctv_feed img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cctv_feed h2 {
+  margin-bottom: 0;
+  padding: 10px;
+  background-color: #343a40;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  width: 100%;
+  height: auto;
+}
+
+/* login.html */
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+}
+
+.login_body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+.login_container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+@keyframes animate {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.login_container .signin {
+  position: absolute;
+  width: 600px;
+  background-color: #242424;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  border-radius: 4px;
+  /* box-shadow: 0 15px 35px rgba(0, 0, 0, 9); */
+}
+.signin .content {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 40px;
+}
+.signin .content h2 {
+  font-size: 2em;
+  color: #0f0;
+  text-transform: uppercase;
+}
+.signin .content .form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.signin .content .form .inputBox {
+  position: relative;
+  width: 100%;
+}
+.signin .content .form .inputBox input {
+  position: relative;
+  width: 100%;
+  background: #333;
+  border: none;
+  outline: none;
+  padding: 25px 10px 7.5px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1em;
+}
+.login_container .signin .content .form .inputBox i {
+  position: absolute;
+  left: 0;
+  padding: 15px 10px;
+  font-style: normal;
+  color: #aaa;
+  transition: 0.5s;
+  pointer-events: none;
+}
+.signin .content .form .inputBox input:focus ~ i,
+.signin .content .form .inputBox input:valid ~ i {
+  transform: translateY(-7.5px);
+  font-size: 0.8em;
+  color: #fff;
+}
+.signin .content .form .links {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.signin .content .form .links a {
+  color: #fff;
+  text-decoration: none;
+}
+.signin .content .form .inputBox input[type="submit"] {
+  padding: 10px;
+  background-color: #0f0;
+  color: #000;
+  font-weight: 600;
+  font-size: 1.35em;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+.inputBox input[type="submit"] {
+  margin-top: 20px;
+}
+.inputBox input[type="submit"]:hover {
+  opacity: 0.7;
+}
+.inputBox input[type="submit"]:active {
+  opacity: 0.3;
+}
+.links {
+  margin-top: 10px;
+}
+
+/* signup */
+.rtsp_container {
+  padding-top: 20px
+}
+
+.rtsp_label {
+  color: white;
+}
+
+.rtsp_add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rtsp_add button {
+  border: 2px solid black;
+  background-color: #343a40;
+  color: white;
+  padding: 0 15px;
+  font-size: 30px;
+  border-radius: 5px;
+}
+
+.rtsp_add button:hover {
+  opacity: 0.6;
 }

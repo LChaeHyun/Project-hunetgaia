@@ -7,12 +7,12 @@
 </head>
 <body>
     {% include '_navbar.html' %}
-    <div class="profile-page-container">
+    <div class="profile_page_container">
         <h1>{{ username }}'s Profile</h1>
         <h2>Registered Addresses</h2>
-        <ul class="address-list">
+        <ul class="address_list">
             {% for address in addresses %}
-            <li class="address-item">
+            <li class="address_item">
                 <span>{{ address }}</span>
                 <form action="{{ url_for('remove_address', username=username, address_index=loop.index0) }}" method="post" style="display:inline;">
                     <button type="submit">Remove</button>
