@@ -5,5 +5,3 @@
 회의록(Notion)
 https://www.notion.so/bbf0799b6e8f4050b52417342b582afc
 
-![Uploading image.png…]()
-
