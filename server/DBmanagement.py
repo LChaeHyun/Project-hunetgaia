@@ -24,6 +24,11 @@ class Management:
         cur.execute(query,values)
         self.conn.commit()
 
+        # last_id = cur.fetchone()[0]
+        # new_entry = {"id": last_id, "name": name, "ip_address": address}
+
+        # return new_entry
+
     #삭제
     def rtsp_delete(self,num):
         cur = self.conn.cursor()
@@ -50,6 +55,15 @@ class Management:
         cur = self.conn.cursor()
         cur.execute("""select * from email;""")
         return cur.fetchall()
+    
+    #삭제
+    def rtsp_delete(self,num):
+        cur = self.conn.cursor()
+        query = """delete from email where id = %s;"""
+        cur.execute(query,num)
+        self.conn.commit()
+
+
     
        
         
