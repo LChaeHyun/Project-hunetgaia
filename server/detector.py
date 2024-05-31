@@ -79,7 +79,7 @@ class Detector:
                 if captured:
                     detection = self.model.predict(source=[frame], save=False, verbose=False)[0]
                     results = []
-                    
+
                     detect_object_xmin = -1000
 
                     for data in detection.boxes.data.tolist(): # data : [xmin, ymin, xmax, ymax, confidence_score, class_id]
@@ -95,8 +95,8 @@ class Detector:
 
                     tracks = self.tracker.update_tracks(results, frame=frame)
                     for i in results:
-                        #print(i)
-                        #print(i[0][0])
+                        # print(i)
+                        # print(i[0][0])
                         pass
 
                     for track in tracks:
@@ -113,7 +113,7 @@ class Detector:
                                 cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
                                 cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
                                 cv2.putText(frame, str(track_id) + ' ' + self.class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
-                                #print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,self.class_list[label],xmin,ymin,xmax,ymax))
+                                # print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,self.class_list[label],xmin,ymin,xmax,ymax))
                                 self.send_email(self.email_receiver, self.class_list[label])
                                 break
                         # if (gap_xmin > -error_range and gap_xmin < error_range and gap_xmax > -error_range and gap_xmax < error_range):
@@ -121,7 +121,7 @@ class Detector:
                         #     cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
                         #     cv2.putText(frame, str(track_id) + ' ' + class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
                         #     print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,class_list[label],xmin,ymin,xmax,ymax))
-                        
+
                     end = datetime.datetime.now()
                     total = (end - start).total_seconds()
                     # print(f'Time to process 1 frame: {total * 1000:.0f} milliseconds')
@@ -142,7 +142,7 @@ class Detector:
 
     def terminate(self):
         self.stop = True
-    
+
     def send_email(self, reciver,cctv):
         now = datetime.datetime.now()
         if now > self.notification_time_limit:
@@ -160,10 +160,10 @@ class Detector:
 
             # Don't send email before notification_time_limit
             self.notification_time_limit = now + datetime.timedelta(hours=24) # For Distribution
-            #self.notification_time_limit = now + datetime.timedelta(seconds=10) #Debug Feature
+            # self.notification_time_limit = now + datetime.timedelta(seconds=10) #Debug Feature
             print(f'sent e-mail at {now}, set notification time limit at {self.notification_time_limit}')
-        else:
-            print(f"didn't sent e-mail at {now}, notification time limit till {self.notification_time_limit}")
+        # else:
+        # print(f"didn't sent e-mail at {now}, notification time limit till {self.notification_time_limit}")
 
 
 if __name__ == "__main__":
