@@ -55,3 +55,11 @@ class Management:
         cur = self.conn.cursor()
         cur.execute("""select * from email;""")
         return cur.fetchall()
+
+        # 삭제
+
+    def email_delete(self, num):
+        cur = self.conn.cursor()
+        query = """delete from email where id = %s;"""
+        cur.execute(query, num)
+        self.conn.commit()

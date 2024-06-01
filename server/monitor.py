@@ -16,6 +16,7 @@ from flask_cors import CORS
 import cv2
 import ffmpeg
 import uuid
+from flask_session import Session
 
 from DBmanagement import Management
 
@@ -49,18 +50,10 @@ class User:
 
 
 app = Flask(__name__)
-CORS(app)
-
-app.config["SECRET_KEY"] = "secret_key"
-# user.username = "orange"
-# user.password = "juice"
-# user.email = "limetree81@gmail.com"
-# user.videos = [
-#     "rtsp://210.99.70.120:1935/live/cctv001.stream",
-#     "rtsp://210.99.70.120:1935/live/cctv002.stream",
-#     "rtsp://210.99.70.120:1935/live/cctv003.stream",
-#     "rtsp://210.99.70.120:1935/live/cctv004.stream",
-# ]
+app.config["SECRET_KEY"] = "your_secret_key"
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+CORS(app, supports_credentials=True)
 
 
 @app.route("/", methods=["POST"])
@@ -72,17 +65,25 @@ def login():
         login_success = management.login(id, password)
 
         if login_success:
-            session_id = str(uuid.uuid4())
-            session[session_id] = {"id": id}
-            return jsonify({"isLogin": True, "session_id": session_id})
+            session["session_id"] = id
+            print(id)
+            return jsonify({"isLogin": True, "session_id": id})
         else:
             return jsonify({"isLogin": False})
     except:
         return jsonify({"isLogin": False})
 
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.pop("session_id", None)
+    return jsonify({"message": "Logged out successfully!"}), 200
+
+
 @app.route("/get_all", methods=["GET"])
 def get_all():
+    if "session_id" not in session:
+        return jsonify({"message": "Authentication is required!"}), 204
     rtsp_addresses = management.rtsp_get()
     email = management.email_get()
     return jsonify({"addresses": rtsp_addresses, "email": email})
@@ -90,12 +91,16 @@ def get_all():
 
 @app.route("/get_rtsp", methods=["GET"])
 def get_rtsp():
+    if "session_id" not in session:
+        return jsonify({"message": "Authentication is required!"}), 204
     rtsp_addresses = management.rtsp_get()
     return jsonify({"rtsp": rtsp_addresses})
 
 
 @app.route("/add_rtsp", methods=["POST"])
 def add_rtsp():
+    if "session_id" not in session:
+        return jsonify({"message": "Authentication is required!"}), 204
     name = request.json["name"]
     address = request.json["address"]
 
@@ -109,6 +114,8 @@ def add_rtsp():
 
 @app.route("/delete_rtsp", methods=["POST"])
 def delete_rtsp():
+    if "session_id" not in session:
+        return jsonify({"message": "Authentication is required!"}), 204
     try:
         rtsp_id = request.json["id"]
 
@@ -121,12 +128,17 @@ def delete_rtsp():
 
 @app.route("/get_email", methods=["GET"])
 def get_email():
+    if "session_id" not in session:
+        return jsonify({"message": "Authentication is required!"}), 204
     email = management.email_get()
     return jsonify({"email": email})
 
 
 @app.route("/add_email", methods=["POST"])
 def add_email():
+    if "session_id" not in session:
+        return jsonify({"message": "Authentication is required!"}), 204
+
     email = request.json["email"]
 
     try:
@@ -138,11 +150,12 @@ def add_email():
 
 @app.route("/delete_email", methods=["POST"])
 def delete_email():
+    if "session_id" not in session:
+        return jsonify({"message": "Authentication is required!"}), 204
+
     try:
-        # Get the ID from the request
         email_id = request.json.get("id")
 
-        # Delete the email
         management.email_delete(email_id)
 
         return jsonify({"message": "Email deleted successfully."})
