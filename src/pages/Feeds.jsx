@@ -3,24 +3,22 @@ import Navbar from "../components/Navbar";
 import "../styles/styles.css";
 import VideoPlayer from "../components/VideoPlayer";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Feeds() {
+  const navigate = useNavigate();
   const [RTSP, setRTSP] = useState(null);
-  // const rtspUrls = [
-  //   "rtsp://210.99.70.120:1935/live/cctv001.stream",
-  //   "rtsp://210.99.70.120:1935/live/cctv002.stream",
-  //   "rtsp://210.99.70.120:1935/live/cctv003.stream",
-  //   "rtsp://210.99.70.120:1935/live/cctv004.stream",
-  // ];
 
   useEffect(() => {
     axios
-      .get("/get_rtsp")
+      .get("/get_rtsp", { withCredentials: true })
       .then((response) => {
+        if (response.status === 204) navigate("/");
         console.log(response.data.rtsp);
         setRTSP(response.data.rtsp);
       })
       .catch((error) => console.log(error));
+    // eslint-disable-next-line
   }, []);
 
   return (

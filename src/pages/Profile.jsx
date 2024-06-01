@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import "../styles/styles.css";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const [getAddresses, setGetAddresses] = useState("");
@@ -10,21 +11,24 @@ function Profile() {
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [isUpdated, setIsUpdated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("/get_all")
+      .get("/get_all", { withCredentials: true })
       .then((response) => {
         console.log(response);
+        if (response.status === 204) navigate("/");
+        console.log(response.data.rtsp);
         setGetAddresses(response.data.addresses);
         setGetEmail(response.data.email);
       })
-      .then((error) => console.log(error));
+      .catch((error) => console.log(error));
   }, [isUpdated]);
 
   const rtspDeleteHandler = (id) => {
     axios
-      .post("/delete_rtsp", { id: id }) // Assuming address has an id field
+      .post("/delete_rtsp", { id: id })
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
@@ -94,8 +98,9 @@ function Profile() {
         </ul>
 
         <h2>Add a New Address</h2>
-        <form method="post" onSubmit={rtspSubmitHandler}>
+        <form method="post" onSubmit={rtspSubmitHandler} className="rtsp_form">
           <input
+            className="name"
             type="text"
             name="rtsp_name"
             placeholder="name"
@@ -103,6 +108,7 @@ function Profile() {
             required
           />
           <input
+            className="url"
             type="text"
             name="address"
             placeholder="url"
@@ -111,10 +117,6 @@ function Profile() {
           />
           <button type="submit">Add Address</button>
         </form>
-
-        <hr />
-        <br />
-        <br />
 
         <h2>Registered Email</h2>
         <ul class="address_list">
@@ -128,10 +130,16 @@ function Profile() {
         </ul>
 
         <h2>Add a New Email</h2>
-        <form method="post" onSubmit={emailSubmitHandler}>
+        <form
+          method="post"
+          onSubmit={emailSubmitHandler}
+          className="email_form"
+        >
           <input
+            className="email"
             type="text"
             name="email"
+            placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
             required
           />

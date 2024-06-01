@@ -1,3 +1,4 @@
+import axios from "axios";
 import "../styles/styles.css";
 
 function Navbar() {
@@ -5,6 +6,8 @@ function Navbar() {
     const logout = window.confirm("로그아웃 하시겠습니까?");
 
     if (logout) {
+      axios.post("/logout", { withCredentials: true });
+      sessionStorage.removeItem("session_id");
       window.location.href = "/";
     }
   };

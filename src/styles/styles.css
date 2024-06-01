@@ -10,6 +10,7 @@ body {
 /* _navbar.html */
 .navbar {
   background-color: #343a40;
+  font-size: 20px;
   overflow: hidden;
   display: flex;
   padding: 0 50px;
@@ -17,7 +18,8 @@ body {
   justify-content: center;
 }
 
-.navbar a,button {
+.navbar a,
+button {
   /* float: left; */
   color: white;
   text-align: center;
@@ -25,12 +27,13 @@ body {
   text-decoration: none;
 }
 .navbar button {
+  font-size: 20px;
   background-color: transparent;
   border: none;
 }
 
-
-.navbar a:hover,button:hover {
+.navbar a:hover,
+button:hover {
   background-color: #ddd;
   color: black;
 }
@@ -42,6 +45,10 @@ body {
   align-items: center;
 }
 
+.profile_page_container h2 {
+  margin: 15px 0;
+}
+
 .address_list {
   list-style-type: none;
   padding: 0;
@@ -50,7 +57,7 @@ body {
 .address_item {
   display: flex;
   align-items: center;
-  width: 500px;
+  width: 700px;
   justify-content: space-between;
   margin-bottom: 15px;
 }
@@ -102,6 +109,61 @@ body {
   text-align: center;
   width: 100%;
   height: auto;
+}
+
+.rtsp_form {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 30px;
+  border-bottom: 3px solid gray;
+}
+
+.rtsp_form .name {
+  width: 100px;
+  margin-right: 20px;
+  border-radius: 10px;
+  padding: 0 5px;
+}
+
+.rtsp_form .url {
+  width: 400px;
+  margin-right: 20px;
+  border-radius: 10px;
+  padding: 0 5px;
+}
+
+.rtsp_form button {
+  border-radius: 10px;
+  border: none;
+  background-color: #666666;
+  color: whitesmoke;
+
+  &:hover {
+    background-color: #222;
+  }
+}
+
+.email_form {
+  display: flex;
+  justify-content: space-between;
+}
+
+.email_form .email {
+  width: 300px;
+  margin-right: 20px;
+  border-radius: 10px;
+  padding: 0 5px;
+}
+
+.email_form button {
+  border-radius: 10px;
+  border: none;
+  background-color: #666666;
+  color: whitesmoke;
+
+  &:hover {
+    background-color: #222;
+  }
 }
 
 /* login.html */
@@ -237,7 +299,7 @@ body {
 
 /* signup */
 .rtsp_container {
-  padding-top: 20px
+  padding-top: 20px;
 }
 
 .rtsp_label {

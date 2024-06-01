@@ -21,6 +21,9 @@ function Home() {
           console.log(response);
 
           if (response.data.isLogin === true) {
+            // localStorage.setItem("session_id", response.data.session_id);
+            sessionStorage.setItem("session_id", response.data.session_id);
+
             navigate("/profile");
           } else {
             alert("아이디 또는 비밀번호가 유효하지 않습니다");
