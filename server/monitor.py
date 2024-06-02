@@ -73,6 +73,17 @@ def login():
     except:
         return jsonify({"isLogin": False})
 
+@app.route("/signup", methods=["POST"])
+def signup():
+    try:
+        id = request.json["id"]
+        password = request.json["password"]
+
+        management.add_user(id, password)
+        return jsonify({"signup": True})
+
+    except:
+        return jsonify({"signup": False})
 
 @app.route("/logout", methods=["POST"])
 def logout():
