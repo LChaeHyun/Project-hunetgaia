@@ -4,6 +4,23 @@ class Management:
     def __init__(self):
         self.conn = pymysql.connect(host='127.0.0.1', user='root', password='root', db='hunet', charset='utf8')
 
+    #사용자 추가
+    def add_user(self,id,pwd):
+        cur = self.conn.cursor()
+        cur.execute("""insert into manager (id, pwd) values (%s,%s);""",(id,pwd))
+        self.conn.commit()
+   
+        
+    #사용자 확인(db_manager가 비었는지 확인, 비었으면 True) 
+    def check_user(self):
+        cur = self.conn.cursor()
+        cur.execute("""select pwd from manager;""")
+        a = cur.fetchone()
+        if a == None:
+            return True
+        return False
+
+
     # 로그인 확인
     def login(self,id,pwd):
         cur = self.conn.cursor()
