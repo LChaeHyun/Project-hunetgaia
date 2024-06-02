@@ -23,7 +23,11 @@ function Profile() {
         setGetAddresses(response.data.addresses);
         setGetEmail(response.data.email);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/error", { state: { message: "정보 가져오기 실패" } });
+      });
+    // eslint-disable-next-line
   }, [isUpdated]);
 
   const rtspDeleteHandler = (id) => {
@@ -35,7 +39,10 @@ function Profile() {
           setIsUpdated((prev) => !prev);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/error", { state: { message: "RTSP 삭제 실패" } });
+      });
   };
 
   const rtspSubmitHandler = (e) => {
@@ -51,18 +58,24 @@ function Profile() {
           setIsUpdated((prev) => !prev);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/error", { state: { message: "RTSP 등록 실패" } });
+      });
   };
 
   const emailDeleteHandler = (id) => {
     axios
-      .post("/delete_email", { id: id }) // Assuming address has an id field
+      .post("/delete_email", { id: id })
       .then((response) => {
         if (response.status === 200) {
           setIsUpdated((prev) => !prev);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/error", { state: { message: "Email 삭제 실패" } });
+      });
   };
 
   const emailSubmitHandler = (e) => {
@@ -76,7 +89,10 @@ function Profile() {
           setEmail("");
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/error", { state: { message: "Email 등록 실패" } });
+      });
   };
 
   return (

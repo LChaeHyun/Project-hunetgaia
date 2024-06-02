@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/login.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
@@ -21,7 +21,6 @@ function Home() {
           console.log(response);
 
           if (response.data.isLogin === true) {
-            // localStorage.setItem("session_id", response.data.session_id);
             sessionStorage.setItem("session_id", response.data.session_id);
 
             navigate("/profile");
@@ -31,6 +30,10 @@ function Home() {
         })
         .catch((error) => {
           console.log(error);
+          navigate("/error", { state: { message: "로그인 오류" } });
+          // throw new Response(JSON.stringify({ message: "로그인 오류" }), {
+          //   status: 500,
+          // });
         });
     } catch (error) {
       console.log(error);
@@ -68,7 +71,8 @@ function Home() {
                 <i>Password</i>
               </div>
               <div class="links">
-                <a href="#">Forgot Password</a> <a href="/signup">Signup</a>
+                <Link to="#">Forgot Password</Link>
+                <Link to="/signup">Signup</Link>
               </div>
               <div class="inputBox">
                 <input type="submit" value="Login" class="submit_btn" />

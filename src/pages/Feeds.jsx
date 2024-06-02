@@ -17,7 +17,10 @@ function Feeds() {
         console.log(response.data.rtsp);
         setRTSP(response.data.rtsp);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        navigate("/error", { state: { message: "RTSP 정보 가져오기 실패" } });
+      });
     // eslint-disable-next-line
   }, []);
 
