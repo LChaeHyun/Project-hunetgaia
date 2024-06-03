@@ -2,7 +2,7 @@ import pymysql
 
 class Management:
     def __init__(self):
-        self.conn = pymysql.connect(host='127.0.0.1', user='root', password='root', db='hunet', charset='utf8')
+        self.conn = pymysql.connect(host='127.0.0.1', user='root', password='careless3636', db='hunet', charset='utf8')
 
     #사용자 추가
     def add_user(self,id,pwd):
@@ -80,3 +80,7 @@ class Management:
         query = """delete from email where id = %s;"""
         cur.execute(query, num)
         self.conn.commit()
+    
+    def refresh_connection(self):
+        self.conn.close()
+        self.__init__()
