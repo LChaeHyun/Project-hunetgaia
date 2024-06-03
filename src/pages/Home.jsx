@@ -31,9 +31,6 @@ function Home() {
         .catch((error) => {
           console.log(error);
           navigate("/error", { state: { message: "로그인 오류" } });
-          // throw new Response(JSON.stringify({ message: "로그인 오류" }), {
-          //   status: 500,
-          // });
         });
     } catch (error) {
       console.log(error);

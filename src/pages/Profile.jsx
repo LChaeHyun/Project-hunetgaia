@@ -56,6 +56,8 @@ function Profile() {
           setAddress("");
           setRTSPName("");
           setIsUpdated((prev) => !prev);
+        } else if (response.status === 204) {
+          alert("이미 존재하는 RTSP입니다.");
         }
       })
       .catch((error) => {
@@ -87,6 +89,8 @@ function Profile() {
         if (response.status === 200) {
           setIsUpdated((prev) => !prev);
           setEmail("");
+        } else if (response.status === 204) {
+          alert("이미 존재하는 이메일입니다.");
         }
       })
       .catch((error) => {
