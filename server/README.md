@@ -67,7 +67,7 @@ create table rtsp(
 
 create table email(
 	id int primary key auto_increment,
-	addrees varchar(50) not null
+	address varchar(50) not null
 );
 
 ```
