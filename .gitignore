@@ -6,6 +6,7 @@ instance/*
 !instance/.gitignore
 .webassets-cache
 .env
+server/flask_session/
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
@@ -73,6 +74,7 @@ db.sqlite3-journal
 
 # Flask stuff:
 instance/
+
 
 # Scrapy stuff:
 .scrapy

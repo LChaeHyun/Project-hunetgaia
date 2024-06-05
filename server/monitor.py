@@ -11,6 +11,8 @@ import cv2
 from flask_session import Session
 from DBmanagement import Management
 from dotenv import load_dotenv
+from datetime import timedelta
+
 import os
 
 
@@ -29,6 +31,7 @@ except:
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 app.config["SESSION_TYPE"] = os.environ.get("SESSION_TYPE")
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=720)
 Session(app)
 CORS(app, supports_credentials=True)
 
