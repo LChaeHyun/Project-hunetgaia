@@ -29,13 +29,29 @@
 
     ```shell
     git clone https://github.com/LChaeHyun/Project-hunetgaia.git
-    cd Project-humetgaia
+    cd Project-hunetgaia
     pip install -r requirements.txt
-    cd Project-humetgaia/server
-    npm install (미정)
+    cd frontend
+    npm install
     ```
 
-2. 데이터베이스 설정
+2. 환경변수 설정
+    - .env 파일 생성
+    - .env 파일 내용
+    ```shell
+    // .env
+
+    # app.config
+    SECRET_KEY="hunetgia_secret_key"
+    SESSION_TYPE="filesystem"
+
+    # MYSQL
+    DB_HOST='127.0.0.1'
+    DB_USER='root'
+    DB_PASSWORD='root'
+    ```
+
+3. 데이터베이스 설정
     - 로컬에 hunet이라는 mysql db 추가 필요
     - db 구조
     ```shell
@@ -58,15 +74,27 @@
     );
     ```
 
-3. 실행(수정될수도)
+4. 실행
+    - detect 서버 실행
+    ```shell
+    cd Project-hunetgaia/server
+    python detector.py
+    ```
+
+
+    - 모니터링 페이지 실행 (monitor.py 실행 후 npm start 실행)
+    ```shell
+    cd Project-hunetgaia/server
+    python monitor.py
+    ```
+
 
     ```shell
-    python detector.py
-    python monitor.py
+    cd Project-hunetgaia/frontend
     npm start
     ```
 
-4. 모니터링 확인
+5. 모니터링 확인
 
     - localhost:3000으로 접속 시 모니터링 페이지 확인 가능
 
