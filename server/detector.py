@@ -8,8 +8,10 @@ from collections import deque
 from deep_sort_realtime.deepsort_tracker import DeepSort
 import smtplib
 from email.message import EmailMessage
-
 from DBmanagement import Management
+import os
+from dotenv import load_dotenv, find_dotenv
+
 CONFIDENCE_THRESHOLD = 0.2
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
@@ -18,8 +20,11 @@ class Reader:
     def __init__(self, source):
         self.source = source
         self.cap = cv2.VideoCapture(source)
-        if not self.cap.isOpened():
-            raise ValueError(f"Unable to open video source: {source}")
+        while not self.cap.isOpened():
+            print(f"Failed to open camera from {self.source}")
+            self.cap.release()
+            time.sleep(10)
+            self.cap = cv2.VideoCapture(source)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.stop = False
@@ -32,16 +37,17 @@ class Reader:
 
     def read(self):
         while not self.stop:
-            #time.sleep(0.03)  # Adjust the sleep time to control the frame processing rate
             try:
-                success, frame = self.cap.read()  # Read a frame from the camera
+                success, frame = self.cap.read()
                 if success:
                     self.frame_buffer.append(frame)
                 else:
-                    print("Failed to read frame from video source")
-            except:
+                    print(f"Failed to read frame from {self.source}")
+            except Exception as e:
+                print(e)
                 self.cap.release()
                 self.__init__(self.source)
+                print(f"Failed to read frame from {self.source}")
                 time.sleep(10)
 
 
@@ -62,8 +68,10 @@ class Detector:
     notification_time_limit = datetime.datetime(year=1,month=1,day=1)
 
     def __init__(self, source):
+        self.source = source
         self.reader = Reader(source)
         self.model = YOLO("./v8sbest.pt")
+
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.max_buffer_size = 4
         self.frame_buffer = deque(maxlen=self.max_buffer_size)
@@ -90,8 +98,6 @@ class Detector:
                     detection = self.model.predict(source=[frame], save=False, verbose=False)[0]
                     results = []
 
-                    detect_object_xmin = -1000
-
                     for data in detection.boxes.data.tolist(): # data : [xmin, ymin, xmax, ymax, confidence_score, class_id]
                         confidence = float(data[4])
                         if confidence < CONFIDENCE_THRESHOLD:
@@ -99,15 +105,9 @@ class Detector:
 
                         xmin, ymin, xmax, ymax = int(data[0]), int(data[1]), int(data[2]), int(data[3])
                         label = int(data[5])
-                        # cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-                        # cv2.putText(frame, class_list[label]+' '+str(round(confidence, 3)) + '%', (xmin, ymin), cv2.FONT_ITALIC, 1, (255, 255, 255), 2)
                         results.append([[xmin, ymin, xmax-xmin, ymax-ymin], confidence, label])
 
                     tracks = self.tracker.update_tracks(results, frame=frame)
-                    for i in results:
-                        # print(i)
-                        # print(i[0][0])
-                        pass
 
                     for track in tracks:
                         if not track.is_confirmed():
@@ -123,26 +123,17 @@ class Detector:
                                 cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
                                 cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
                                 cv2.putText(frame, str(track_id) + ' ' + self.class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
-                                # print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,self.class_list[label],xmin,ymin,xmax,ymax))
-                                print("fire detected")
+                                print(f"Fire of smoke Detected at {self.source}")
                                 self.send_email()
                                 break
-                        # if (gap_xmin > -error_range and gap_xmin < error_range and gap_xmax > -error_range and gap_xmax < error_range):
-                        #     cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
-                        #     cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
-                        #     cv2.putText(frame, str(track_id) + ' ' + class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
-                        #     print('id : %s label : %s (xmin, ymin) : (%d, %d) (xmax, ymax) : (%d, %d)' % (track_id,class_list[label],xmin,ymin,xmax,ymax))
-
                     end = datetime.datetime.now()
                     total = (end - start).total_seconds()
-                    # print(f'Time to process 1 frame: {total * 1000:.0f} milliseconds')
-
                     fps = f'FPS: {1 / total:.2f}'
                     cv2.putText(frame, fps, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                     self.frame_buffer.append(frame)
             except Exception as e:
                 print(f"Error during detection: {e}")
-                self.stop = True
+                time.sleep(10)
         self.reader.terminate()
 
     def capture(self):
@@ -152,6 +143,7 @@ class Detector:
             return True, self.frame_buffer[-2]
 
     def terminate(self):
+        cv2.destroyAllWindows()
         self.stop = True
 
     def send_email(self):
@@ -170,14 +162,27 @@ class Detector:
             smtp.quit()
 
             # Don't send email before notification_time_limit
-            self.notification_time_limit = now + datetime.timedelta(hours=24) # For Distribution
-            # self.notification_time_limit = now + datetime.timedelta(seconds=10) #Debug Feature
+            self.notification_time_limit = now + datetime.timedelta(hours=24)
             print(f'sent e-mail at {now}, set notification time limit at {self.notification_time_limit}')
-        # else:
-        # print(f"didn't sent e-mail at {now}, notification time limit till {self.notification_time_limit}")
 
 if __name__ == "__main__":
-    db = Management()
+    print("Initializing Detectors. Press Ctrl+C to stop.")
+    env_path = find_dotenv()
+    assert env_path, ".env not found. Please Create one and retry."
+    load_dotenv(env_path)
+
+    assert os.path.isfile('v8sbest.pt'), "Missing v8sbest.pt. Aborting..."
+
+    db_host = os.getenv('DB_HOST')
+    db_user = os.getenv('DB_USER')
+    db_password = os.getenv('DB_PASSWORD')
+
+    try:
+        db = Management(db_host, db_user, db_password)
+    except Exception as  e:
+        print(e)
+        print("Failed to open DB. Is DB created and .env info correct?")
+        exit()
     
     detectors = dict()
     rtsps = []
@@ -187,8 +192,8 @@ if __name__ == "__main__":
 
         new_rtsps = db.rtsp_get()
         new_email_receivers = [email for _, email in db.email_get()]
-        print(new_rtsps)
-        print(new_email_receivers)
+        print(f'Currently watching:',*[rtsp for _, _, rtsp in new_rtsps], sep='\n\t', end='\n\n')
+        print(f'Email receivers:', *new_email_receivers, sep='\n\t', end='\n\n')
 
         if new_rtsps != rtsps:
             for index, _, address in set(rtsps) - set(new_rtsps):
@@ -207,27 +212,5 @@ if __name__ == "__main__":
             email_receivers = new_email_receivers
             print("E-mail address info updated.")
         
-        db.refresh_connection()
-        time.sleep(10) #set delay #10 ~ 60초가 적당하지 않을까요?
-    
-    """
-    TODO-List
-    1. db remote server의 host, user, password를 받아오기 - 앱 시작하면 input으로 받아서 처리할까?
-    2. check address validity
-    - 주소 형식이 에러난 경우 : 가능
-    - 스트림이 안 열린(?) 경우 : 해결, 그런데 테스트 스레드 종료까지 9분 정도 걸림
-    3. 에러 났을 때 어떻게 할 것인가? 그냥 계속 try 실패 반복?? 어쩔?
-    4. detect로그 남기기 ? 해야댐? 이제와서?
-    """
-    
-    # #detector = Detector(source="rtsp://210.99.70.120:1935/live/cctv001.stream")
-    # detector = Detector(source=0, email_receiver='kghun81@gmail.com')
-    # detector()
-    # while True:
-    #     captured, frame = detector.capture()
-    #     if captured:
-    #         cv2.imshow("Frame", frame)
-    #     if cv2.waitKey(5) & 0xFF == 27:
-    #         break
-    # cv2.destroyAllWindows()
-    # detector.terminate()
+        db.refresh_connection(db_host, db_user, db_password)
+        time.sleep(30)
