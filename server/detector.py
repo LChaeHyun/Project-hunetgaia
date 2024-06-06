@@ -11,8 +11,11 @@ from email.message import EmailMessage
 from DBmanagement import Management
 import os
 from dotenv import load_dotenv, find_dotenv
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 
-CONFIDENCE_THRESHOLD = 0.2
+CONFIDENCE_THRESHOLD = 0.3
 GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 
@@ -124,6 +127,7 @@ class Detector:
                                 cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
                                 cv2.putText(frame, str(track_id) + ' ' + self.class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
                                 print(f"Fire of smoke Detected at {self.source}")
+                                img_captured = cv2.imwrite('./capture/capture.png', frame)
                                 self.send_email()
                                 break
                     end = datetime.datetime.now()
@@ -152,8 +156,19 @@ class Detector:
             smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             EMAIL_ADDR = 'testhunetgaia@gmail.com'
             smtp.login(EMAIL_ADDR, 'kfzxrsvnqitwnrab')
-            message = EmailMessage()
-            message.set_content(f'Fire or smoke has been detected at {now}')
+            message = MIMEMultipart('related')
+            # email message body
+            message_body = f'Fire or smoke has been detected at {now}'
+            message_html = MIMEText(f'<html><body>{message_body}<br><img src="cid:image1"></body></html>', 'html')
+            message.attach(message_html)
+
+            # Add an image to your email
+            image_path = './capture/capture.png'
+            with open(image_path,'rb') as img:
+                    image_file = MIMEImage(img.read(), name=image_path)
+            image_file.add_header('Content-ID','<image1>')
+            message.attach(image_file)
+            
             subject = f'Fire or smoke has been detected'
             message["Subject"] = subject
             message["From"] = EMAIL_ADDR
