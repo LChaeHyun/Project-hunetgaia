@@ -12,7 +12,6 @@ from flask_session import Session
 from DBmanagement import Management
 from dotenv import load_dotenv
 from datetime import timedelta
-
 import os
 
 
@@ -22,6 +21,7 @@ try:
     host = os.environ.get("DB_HOST")
     user = os.environ.get("DB_USER")
     password = os.environ.get("DB_PASSWORD")
+    rtsp_limit = os.environ.get("DB_RTSPLIMIT")
     management = Management(host, user, password)
     print("DB connected")
 except:
@@ -59,7 +59,6 @@ def signup():
     try:
         id = request.json["id"]
         password = request.json["password"]
-
         signup_success = management.add_user(id, password)
         if signup_success:
             return jsonify({"signup": True}), 200
@@ -67,6 +66,7 @@ def signup():
             return jsonify({"signup": False}), 204
     except:
         return jsonify({"signup": False}), 204
+
 
 
 @app.route("/logout", methods=["POST"])
@@ -100,11 +100,14 @@ def add_rtsp():
     address = request.json["address"]
 
     try:
-        success_add_rtsp = management.rtsp_add(name, address)
-        if success_add_rtsp:
+        success_add_rtsp = management.rtsp_add(name,address,int(rtsp_limit))
+        if success_add_rtsp[0]:
             return jsonify({"add": True}), 200
-        else:
+        elif success_add_rtsp[1] == 0:
             return jsonify({"add": False}), 204
+        else:
+            #rtsp 갯수 초과일때 
+            print("abc")
     except:
         return jsonify({"message": "can not add rtsp address"})
 
