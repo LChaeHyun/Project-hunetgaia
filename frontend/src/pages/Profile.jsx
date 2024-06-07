@@ -102,13 +102,13 @@ function Profile() {
   return (
     <>
       <Navbar />
-      <div class="profile_page_container">
+      <div className="profile_page_container">
         <h1>Profile</h1>
         <h2>Registered Addresses</h2>
-        <ul class="address_list">
+        <ul className="address_list">
           {getAddresses &&
             getAddresses.map(([id, name, url]) => (
-              <li class="address_item" key={id}>
+              <li className="address_item" key={id}>
                 <span>
                   {name} : {url}
                 </span>
@@ -139,10 +139,10 @@ function Profile() {
         </form>
 
         <h2>Registered Email</h2>
-        <ul class="address_list">
+        <ul className="address_list">
           {getEmail &&
             getEmail.map(([id, email]) => (
-              <li class="address_item" key={id}>
+              <li className="address_item" key={id}>
                 <span>{email}</span>
                 <button onClick={() => emailDeleteHandler(id)}>Remove</button>
               </li>

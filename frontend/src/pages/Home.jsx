@@ -38,18 +38,18 @@ function Home() {
   };
 
   return (
-    <section class="login_container">
-      <div class="signin">
-        <div class="content">
+    <section className="login_container">
+      <div className="signin">
+        <div className="content">
           <h2>Sign In</h2>
-          <div class="form">
+          <div className="form">
             <form
               method="post"
               action="/"
               id="login-form"
               onSubmit={submitHandler}
             >
-              <div class="inputBox">
+              <div className="inputBox">
                 <input
                   type="text"
                   required
@@ -58,7 +58,7 @@ function Home() {
                 />{" "}
                 <i>id</i>
               </div>
-              <div class="inputBox">
+              <div className="inputBox">
                 <input
                   type="password"
                   name="password"
@@ -67,12 +67,12 @@ function Home() {
                 />
                 <i>Password</i>
               </div>
-              <div class="links">
+              <div className="links">
                 <Link to="#">Forgot Password</Link>
                 <Link to="/signup">Signup</Link>
               </div>
-              <div class="inputBox">
-                <input type="submit" value="Login" class="submit_btn" />
+              <div className="inputBox">
+                <input type="submit" value="Login" className="submit_btn" />
               </div>
             </form>
           </div>

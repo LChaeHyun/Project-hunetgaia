@@ -13,7 +13,7 @@ function Navbar() {
   };
 
   return (
-    <div class="navbar">
+    <div className="navbar">
       <a href="/profile">Profile</a>
       <a href="/all">All Feeds</a>
       <button onClick={logoutHandler}>Logout</button>

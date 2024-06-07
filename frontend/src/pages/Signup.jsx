@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/login.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const navigate = useNavigate();
+  const [validPassword, setValidPassword] = useState(true);
+  const [equalToconfirmPassword, setEqualToConfirmPassword] = useState(true);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -16,6 +20,31 @@ function Signup() {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    if (name === "password") setPasswordTouched(true);
+    if (name === "confirm_password") setConfirmPasswordTouched(true);
+  };
+
+  useEffect(() => {
+    if (passwordTouched && formData.password.length < 6) {
+      setValidPassword(false);
+    } else {
+      setValidPassword(true);
+    }
+  }, [formData.password, passwordTouched]);
+
+  useEffect(() => {
+    if (
+      confirmPasswordTouched &&
+      formData.confirm_password !== formData.password
+    ) {
+      setEqualToConfirmPassword(false);
+    } else {
+      setEqualToConfirmPassword(true);
+    }
+  }, [formData.confirm_password, formData.password, confirmPasswordTouched]);
 
   const signupHandler = (e) => {
     e.preventDefault();
@@ -43,13 +72,13 @@ function Signup() {
   };
 
   return (
-    <section class="login_container">
-      <div class="signin">
-        <div class="content">
+    <section className="login_container">
+      <div className="signin">
+        <div className="content">
           <h2>Sign Up</h2>
-          <div class="form">
+          <div className="form">
             <form method="post" onSubmit={signupHandler}>
-              <div class="inputBox">
+              <div className="inputBox">
                 <input
                   type="text"
                   name="username"
@@ -58,25 +87,51 @@ function Signup() {
                 />
                 <i>Username</i>
               </div>
-              <div class="inputBox">
+              <div className="inputBox">
                 <input
+                  className={validPassword ? "" : "invalid"}
                   type="password"
                   name="password"
                   required
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
                 <i>Password</i>
+                {!validPassword && (
+                  <p
+                    style={{
+                      float: "right",
+                      margin: "10px 10px",
+                      color: "whitesmoke",
+                    }}
+                  >
+                    비밀번호는 6자리 이상이어야 합니다.
+                  </p>
+                )}
               </div>
-              <div class="inputBox">
+              <div className="inputBox">
                 <input
+                  className={equalToconfirmPassword ? "" : "invalid"}
                   type="password"
                   name="confirm_password"
                   required
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
                 <i>Confirm Password</i>
+                {!equalToconfirmPassword && (
+                  <p
+                    style={{
+                      float: "right",
+                      margin: "10px 10px",
+                      color: "whitesmoke",
+                    }}
+                  >
+                    비밀번호가 다릅니다.
+                  </p>
+                )}
               </div>
-              <div class="inputBox">
+              <div className="inputBox">
                 <input type="submit" value="Sign Up" />
               </div>
             </form>

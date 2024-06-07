@@ -118,3 +118,6 @@
 .inputBox input[type="submit"]:active {
   opacity: 0.6;
 }
+.signin .content .form .inputBox .invalid {
+  border: 2px solid rgb(238, 70, 70);
+}
