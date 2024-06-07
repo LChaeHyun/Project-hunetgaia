@@ -44,6 +44,7 @@
     # app.config
     SECRET_KEY="hunetgia_secret_key"
     SESSION_TYPE="filesystem"
+    DB_RTSPLIMIT=5
 
     # MYSQL
     DB_HOST='127.0.0.1'
@@ -59,7 +60,7 @@
     use hunet;
     create table manager(
         id varchar(50) NOT NULL primary key,
-        pwd varchar(50) not null
+        pwd varchar(300) not null
     );
 
     create table rtsp(

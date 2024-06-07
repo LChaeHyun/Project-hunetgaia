@@ -66,7 +66,6 @@ class Reader:
 
 
 class Detector:
-
     email_receivers = []
     notification_time_limit = datetime.datetime(year=1,month=1,day=1)
 
@@ -93,6 +92,7 @@ class Detector:
 
     def detect(self):
         self.reader()
+        capNum = 1
         while not self.stop:
             try:
                 start = datetime.datetime.now()
@@ -127,8 +127,12 @@ class Detector:
                                 cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
                                 cv2.putText(frame, str(track_id) + ' ' + self.class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
                                 print(f"Fire of smoke Detected at {self.source}")
-                                img_captured = cv2.imwrite('./capture/capture.png', frame)
-                                self.send_email()
+                                img_captured = cv2.imwrite('./capture/capture_%02d.png' % capNum, frame)
+                                self.send_email(capNum)
+                                capNum += 1
+                                if (capNum > 10):
+                                    capNum = 1
+                                
                                 break
                     end = datetime.datetime.now()
                     total = (end - start).total_seconds()
@@ -150,7 +154,7 @@ class Detector:
         cv2.destroyAllWindows()
         self.stop = True
 
-    def send_email(self):
+    def send_email(self, capNum):
         now = datetime.datetime.now()
         if now > self.notification_time_limit:
             smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
@@ -159,11 +163,12 @@ class Detector:
             message = MIMEMultipart('related')
             # email message body
             message_body = f'Fire or smoke has been detected at {now}'
-            message_html = MIMEText(f'<html><body>{message_body}<br><img src="cid:image1"></body></html>', 'html')
+            message_html = MIMEText(f'<html><body>{message_body}<br><img src="cid:image1" style="width: 100%; max-width:600px; margin: 10px;"></body></html>', 'html')
             message.attach(message_html)
 
             # Add an image to your email
-            image_path = './capture/capture.png'
+            self.capNum = capNum
+            image_path = './capture/capture_%02d.png' % self.capNum
             with open(image_path,'rb') as img:
                     image_file = MIMEImage(img.read(), name=image_path)
             image_file.add_header('Content-ID','<image1>')
@@ -178,7 +183,7 @@ class Detector:
 
             # Don't send email before notification_time_limit
             self.notification_time_limit = now + datetime.timedelta(hours=24)
-            print(f'sent e-mail at {now}, set notification time limit at {self.notification_time_limit}')
+            print(f'sent e-mail at {now}, set notification time limit at {self.notification_time_limit} with capNum:{self.capNum}')
 
 if __name__ == "__main__":
     print("Initializing Detectors. Press Ctrl+C to stop.")
