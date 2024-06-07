@@ -55,7 +55,7 @@ create database hunet;
 use hunet;
 create table manager(
 	id varchar(50) NOT NULL primary key,
-	pwd varchar(50) not null
+	pwd varchar(300) not null
 );
 
 create table rtsp(
