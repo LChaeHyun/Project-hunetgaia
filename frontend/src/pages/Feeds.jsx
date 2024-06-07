@@ -14,7 +14,6 @@ function Feeds() {
       .get("/get_rtsp", { withCredentials: true })
       .then((response) => {
         if (response.status === 204) navigate("/");
-        console.log(response.data.rtsp);
         setRTSP(response.data.rtsp);
       })
       .catch((error) => {

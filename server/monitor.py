@@ -47,11 +47,11 @@ def login():
         if login_success:
             session["session_id"] = id
             print(id)
-            return jsonify({"isLogin": True, "session_id": id})
+            return jsonify({"isLogin": True, "session_id": id}), 200
         else:
-            return jsonify({"isLogin": False})
+            return jsonify({"isLogin": False}), 204
     except:
-        return jsonify({"isLogin": False})
+        return jsonify({"isLogin": False}), 205
 
 
 @app.route("/signup", methods=["POST"])
@@ -60,13 +60,13 @@ def signup():
         id = request.json["id"]
         password = request.json["password"]
         signup_success = management.add_user(id, password)
+        print(signup_success)
         if signup_success:
             return jsonify({"signup": True}), 200
         else:
             return jsonify({"signup": False}), 204
     except:
-        return jsonify({"signup": False}), 204
-
+        return jsonify({"signup": False}), 205
 
 
 @app.route("/logout", methods=["POST"])
@@ -100,16 +100,30 @@ def add_rtsp():
     address = request.json["address"]
 
     try:
-        success_add_rtsp = management.rtsp_add(name,address,int(rtsp_limit))
+        success_add_rtsp = management.rtsp_add(name, address, int(rtsp_limit))
+        print(success_add_rtsp)
         if success_add_rtsp[0]:
             return jsonify({"add": True}), 200
         elif success_add_rtsp[1] == 0:
             return jsonify({"add": False}), 204
         else:
-            #rtsp 갯수 초과일때 
-            print("abc")
+            return (
+                jsonify(
+                    {
+                        "message": "등록 가능한 RTSP 개수는 최대 "
+                        + (rtsp_limit)
+                        + "입니다"
+                    }
+                ),
+                202,
+            )
     except:
-        return jsonify({"message": "can not add rtsp address"})
+        return (
+            jsonify(
+                {"message": "등록 가능한 RTSP 개수는 최대 " + (rtsp_limit) + "입니다"}
+            ),
+            202,
+        )
 
 
 @app.route("/delete_rtsp", methods=["POST"])

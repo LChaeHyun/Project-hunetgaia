@@ -58,7 +58,7 @@ function Signup() {
       .post("/signup", { id: formData.username, password: formData.password })
       .then((response) => {
         console.log(response);
-        if (response.data.signup === true) {
+        if (response.status === 200) {
           alert("회원가입 성공! 로그인 해주세요.");
           navigate("/");
         } else {

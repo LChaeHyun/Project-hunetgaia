@@ -51,13 +51,14 @@ function Profile() {
     axios
       .post("/add_rtsp", { name: RTSPName, address: address })
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
           setAddress("");
           setRTSPName("");
           setIsUpdated((prev) => !prev);
         } else if (response.status === 204) {
           alert("이미 존재하는 RTSP입니다.");
+        } else if (response.status === 202) {
+          alert(response.data.message);
         }
       })
       .catch((error) => {
