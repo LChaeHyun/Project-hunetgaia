@@ -50,6 +50,11 @@
     DB_HOST='127.0.0.1'
     DB_USER='root'
     DB_PASSWORD='root'
+
+    #detector.py
+    MAIL_TIME_INTERVAL_HOUR = 24
+    MAIL_TIME_INTERVAL_MIN = 0
+    MAIL_TIME_INTERVAL_SEC = 0
     ```
 
 3. 데이터베이스 설정

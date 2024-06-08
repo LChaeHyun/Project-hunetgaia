@@ -67,6 +67,7 @@ class Reader:
 
 class Detector:
     email_receivers = []
+    notification_time_interval = datetime.timedelta(hours=24)
     notification_time_limit = datetime.datetime(year=1,month=1,day=1)
 
     def __init__(self, source):
@@ -126,7 +127,7 @@ class Detector:
                                 cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), GREEN, 2)
                                 cv2.rectangle(frame, (xmin, ymin - 20), (xmin + 20, ymin), GREEN, -1)
                                 cv2.putText(frame, str(track_id) + ' ' + self.class_list[label]+' '+str(round(confidence, 2)), (xmin + 5, ymin - 8), cv2.FONT_HERSHEY_SIMPLEX, 0.5, WHITE, 2)
-                                print(f"Fire of smoke Detected at {self.source}")
+                                print(f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Fire of smoke Detected at {self.source}")
                                 img_captured = cv2.imwrite('./capture/capture_%02d.png' % capNum, frame)
                                 self.send_email(capNum)
                                 capNum += 1
@@ -156,7 +157,7 @@ class Detector:
 
     def send_email(self, capNum):
         now = datetime.datetime.now()
-        if now > self.notification_time_limit:
+        if now > self.notification_time_limit and self.email_receivers:
             smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             EMAIL_ADDR = 'testhunetgaia@gmail.com'
             smtp.login(EMAIL_ADDR, 'kfzxrsvnqitwnrab')
@@ -196,12 +197,22 @@ if __name__ == "__main__":
     db_host = os.getenv('DB_HOST')
     db_user = os.getenv('DB_USER')
     db_password = os.getenv('DB_PASSWORD')
-
+    MAIL_TIME_INTERVAL_HOUR = int(os.getenv('MAIL_TIME_INTERVAL_HOUR') or 0)
+    MAIL_TIME_INTERVAL_MINUTE = int(os.getenv('MAIL_TIME_INTERVAL_MINUTE') or 0)
+    MAIL_TIME_INTERVAL_SECOND = int(os.getenv('MAIL_TIME_INTERVAL_SECOND') or 0)
+    
     try:
         db = Management(db_host, db_user, db_password)
-    except Exception as  e:
+    except Exception as e:
         print(e)
         print("Failed to open DB. Is DB created and .env info correct?")
+        exit()
+    
+    try:
+        Detector.notification_time_interval = datetime.timedelta(hours=MAIL_TIME_INTERVAL_HOUR, minutes=MAIL_TIME_INTERVAL_MINUTE, seconds=MAIL_TIME_INTERVAL_SECOND)
+    except Exception as e:
+        print(e)
+        print("Error setting notification_time_interval.")
         exit()
     
     detectors = dict()
@@ -212,8 +223,8 @@ if __name__ == "__main__":
 
         new_rtsps = db.rtsp_get()
         new_email_receivers = [email for _, email in db.email_get()]
-        print(f'Currently watching:',*[rtsp for _, _, rtsp in new_rtsps], sep='\n\t', end='\n\n')
-        print(f'Email receivers:', *new_email_receivers, sep='\n\t', end='\n\n')
+        print(f'Currently watching:',*[rtsp for _, _, rtsp in new_rtsps] if new_rtsps else 'no data', sep='\n\t', end='\n\n')
+        print(f'Email receivers:', *new_email_receivers if new_email_receivers else 'no data', sep='\n\t', end='\n\n')
 
         if new_rtsps != rtsps:
             for index, _, address in set(rtsps) - set(new_rtsps):
