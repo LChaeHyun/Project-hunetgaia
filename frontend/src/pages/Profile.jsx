@@ -48,6 +48,11 @@ function Profile() {
   const rtspSubmitHandler = (e) => {
     e.preventDefault();
 
+    if (RTSPName.trim() === "" || address.trim() === "") {
+      alert("RTSP 주소와 이름을 입력해주세요.");
+      return;
+    }
+
     axios
       .post("/add_rtsp", { name: RTSPName, address: address })
       .then((response) => {
@@ -55,6 +60,7 @@ function Profile() {
           setAddress("");
           setRTSPName("");
           setIsUpdated((prev) => !prev);
+          alert("등록되었습니다!");
         } else if (response.status === 204) {
           alert("이미 존재하는 RTSP입니다.");
         } else if (response.status === 202) {
@@ -84,12 +90,18 @@ function Profile() {
   const emailSubmitHandler = (e) => {
     e.preventDefault();
 
+    if (email.trim() === "") {
+      alert("이메일을 입력하세요.");
+      return;
+    }
+
     axios
       .post("/add_email", { email: email })
       .then((response) => {
         if (response.status === 200) {
           setIsUpdated((prev) => !prev);
           setEmail("");
+          alert("등록되었습니다!");
         } else if (response.status === 204) {
           alert("이미 존재하는 이메일입니다.");
         }
@@ -125,6 +137,7 @@ function Profile() {
             type="text"
             name="rtsp_name"
             placeholder="name"
+            value={RTSPName}
             onChange={(e) => setRTSPName(e.target.value)}
             required
           />
@@ -133,6 +146,7 @@ function Profile() {
             type="text"
             name="address"
             placeholder="url"
+            value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
           />
@@ -161,6 +175,7 @@ function Profile() {
             type="text"
             name="email"
             placeholder="email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
